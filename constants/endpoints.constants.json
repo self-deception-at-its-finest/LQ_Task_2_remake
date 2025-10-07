@@ -1,0 +1,7 @@
+{
+  "registration": "account/register",
+  "login": "login",
+  "home": "",
+  "myAccount": "my/account",
+  "myPage": "my/page"
+}
