@@ -1,0 +1,62 @@
+name: Test
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  repository_dispatch:
+    types: [regression]
+  # schedule:
+  #     - cron: '0 9 * * *'
+  workflow_dispatch:
+
+concurrency: test
+
+env:
+  BASE_URL: ${{ secrets.BASE_URL }}
+  TEST_USER_LOGIN: ${{ secrets.TEST_USER_LOGIN }}
+  TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
+
+jobs:
+  test:
+    timeout-minutes: 60
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: lts/*
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+
+      - name: Run Playwright tests
+        run: npx playwright test --reporter=html
+
+      - name: Verify report generation
+        run: |
+          if [ -d "playwright-report" ] && [ -f "playwright-report/index.html" ]; then
+            echo "✅ Playwright report generated"
+          else
+            echo "❌ Playwright report NOT generated"
+            exit 1
+          fi
+
+      - name: Deploy report to GitHub Pages
+        uses: peaceiris/actions-gh-pages@v3
+        with:
+          github_token: ${{ secrets.GH_PAT}}
+          publish_branch: test-reports
+          publish_dir: ./playwright-report
+          force_orphan: true
+          user_name: 'github-actions[bot]'
+          user_email: 'github-actions[bot]@users.noreply.github.com'

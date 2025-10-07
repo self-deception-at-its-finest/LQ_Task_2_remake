@@ -1,0 +1,31 @@
+{
+  "name": "task_2_remake",
+  "version": "1.0.0",
+  "description": "Automated tests for Redmine.org",
+  "main": "index.js",
+  "scripts": {
+    "tests": "playwright test -c configs/playwright.config.ts",
+    "tests:headed": "playwright test -c configs/playwright.config.ts --headed",
+    "tests:config:chromium": "playwright test -c configs/playwright.chromium.config.ts",
+    "tests:list": "playwright test -c configs/playwright.config.ts --list",
+    "tests:project": "playwright test -c configs/playwright.config.ts --project firefox",
+    "tests:spec": "playwright test -c configs/playwright.config.ts moreExamples",
+    "report:html:show": "playwright show-report test-reports/html"
+  },
+  "keywords": [
+    "playwright",
+    "testing",
+    "redmine"
+  ],
+  "author": "Mykhail Tkachenko",
+  "license": "ISC",
+  "devDependencies": {
+    "@faker-js/faker": "^10.0.0",
+    "@playwright/test": "^1.55.1",
+    "@types/node": "^24.6.1"
+  },
+  "dependencies": {
+    "axios": "^1.12.2",
+    "dotenv": "^17.2.3"
+  }
+}
